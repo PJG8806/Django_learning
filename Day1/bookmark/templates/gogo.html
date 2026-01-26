@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>{{ num }}단</h1>
+    {% for i, result in results %}
+{#       <p>{{ num }} x {{ forloop.counter }} = {{ result }}</p>#}
+        <p>{{ num }} x {{ i }} = {{ result }}</p>
+    {% endfor %}
+
+{#    {% for i in range %}#}
+{#        <p>{{ num }} x {{ i }} = {%  widthratio num 1  i %}</p>#}
+{#        <!-- widthration 은 현재값 / 최대값 * 최대값 계산해서 출력 하는 방식으로 현재 최대값을 1로 넣어서 곱셉 연산 (불필요한 나누기를 진행)!-->#}
+{#    {% endfor %}#}
+
+{#    {% for i in '123456789' |make_list %}#}
+{#        <p>{{ num }} x {{ i }} = {%  widthratio num 1  i %}</p>#}
+{#    {% endfor %}#}
+</body>
+</html>
