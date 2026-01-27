@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% for todo in data %}
+        <li><a href="{% url 'todo_info' todo.id %}">{{ todo.title }}</a></li> <!-- urls 에서 name 명칭이 todo_info 찾아서 url을 가져와 / + todo.id 값을 합쳐준다  여기서 url은 reverse()같은 효과를 준다-->
+    {% endfor %}
+</body>
+</html>
