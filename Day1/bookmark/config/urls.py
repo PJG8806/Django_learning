@@ -19,6 +19,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from django.urls import path
 from django.shortcuts import redirect
+from bookmark import views
 
 
 movie_list = [
@@ -98,5 +99,12 @@ urlpatterns = [
     path('movie/', movies),
     path('movie/<int:index>/', movie_detail),
     path('gugu/<int:num>/', gugu),
+    path('bookmark/', views.bookmark_list),
+    path('bookmark/<int:pk>/', views.bookmark_detail),
 
 ]
+
+
+# ipython 패키지 설치  사용시 터미널 shell 작업을 편하게 가능하다
+# python manage.py shell 실행
+# python manage.py shell_plus 여러가지 임폴트를 바로 해준다
