@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <nav style="display: flex;justify-content: space-between">
+        <a href="{% url 'todo_list' %}">홈</a>
+        <div style="text-align: right">
+            {% if request.user.is_authenticated %}
+                <form action="{% url 'logout' %}" method="POST" style="text-align: right">
+                    {% csrf_token %}
+                    {{ request.user.username }}
+                    <button>로그아웃</button>
+                    <a href="{% url 'todo_create' %}">추가</a>
+                </form>
+            {% else %}
+                <div style="text-align: right">
+                    <a href="{% url 'signup' %}">회원가입</a>
+                    <a href="{% url 'login' %}">로그인</a>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+    {% block content %}{% endblock %}
+</body>
+</html>
