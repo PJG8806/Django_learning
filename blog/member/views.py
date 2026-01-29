@@ -33,6 +33,11 @@ def login(request):
     form = AuthenticationForm(request, request.POST or None) # 입력한 유저 정보로 로그인
     if form.is_valid():
         django_login(request, form.get_user())
+
+        next = request.GET.get('next')
+        if next:
+            return redirect(next)
+
         return redirect(reverse('blog_list')) # html url 함수처럼 이름을 찾아 url을 설정해준다
         # redirect 페이지 이동
     context = {
