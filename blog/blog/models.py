@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -11,7 +12,7 @@ class Blog(models.Model):
         ('dog', '강아지'),
     )
 
-    category = models.CharField('카테고리', max_length=10, choices=CATEGORY_CHOICES)
+    category = models.CharField('카테고리', max_length=10, choices=CATEGORY_CHOICES, default='free')
     title = models.CharField('제목', max_length=100)
     content = models.TextField('본문')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -24,10 +25,15 @@ class Blog(models.Model):
     def __str__(self):
         return f'[{self.get_category_display()}] {self.title[:10]}' # choices 사용시 원하는 값 나오게 하기 위해서 get_(choices컬럼명)_display()
 
+    def get_absolute_url(self):
+        return reverse('blog:detail', kwargs={'pk': self.objects.pk})
+
     class Meta:
         verbose_name = '블로그'
         verbose_name_plural = '블로그 목록'
 
+    # category update
+    # Blog.objects.filter(category='').update(category='free')
 
 # 제목
 # 본문

@@ -38,7 +38,7 @@ def login(request):
         if next:
             return redirect(next)
 
-        return redirect(reverse('blog_list')) # html url 함수처럼 이름을 찾아 url을 설정해준다
+        return redirect(reverse('blog:list')) # html url 함수처럼 이름을 찾아 url을 설정해준다
         # redirect 페이지 이동
     context = {
         'form': form

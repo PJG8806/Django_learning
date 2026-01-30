@@ -34,7 +34,8 @@ def blog_list(request):
 
     context = {
         #'blogs': blogs,
-        'page_object': page_object,
+        'object_list': page_object,
+        'pag_obj': page_object,
     }
 
     response = render(request, 'blog_list.html', context)
@@ -60,7 +61,7 @@ def blog_create(request):
         blog = form.save(commit=False) # DB에 저장은 안하고 모델만 만든다
         blog.author = request.user
         blog.save()
-        return redirect(reverse('blog_detail', kwargs={'pk' : blog.pk}))
+        return redirect(reverse('fb:detail', kwargs={'pk' : blog.pk}))
 
     context = {'form': form}
     return render(request, 'blog_create.html', context)
@@ -75,7 +76,7 @@ def blog_update(request, pk):
     form = BlogForm(request.POST or None, instance=blog) # instance 넣으면 값에 맞게 form에 넣어준다 (기초 데이터, 수정 전 값)
     if form.is_valid():
         blog = form.save() # DB에 저장은 안하고 모델만 만든다
-        return redirect(reverse('blog_detail', kwargs={'pk' : blog.pk}))
+        return redirect(reverse('fb:detail', kwargs={'pk' : blog.pk}))
 
     context = {
         'form': form,
@@ -91,4 +92,4 @@ def blog_delete(request, pk):
     blog = get_object_or_404(Blog, pk=pk, author=request.user)
     blog.delete()
 
-    return redirect(reverse('blog_list'))
+    return redirect(reverse('fb:list'))
