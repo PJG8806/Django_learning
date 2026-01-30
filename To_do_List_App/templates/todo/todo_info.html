@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>{{ todo.title }}</h1>
-    <div style="text-align: right">
-    {% if request.user.id == todo.user_id %}
-        <a href="{% url 'todo_update' todo_id=todo.id %}">수정</a>
-        <a href="{% url 'todo_delete' todo_id=todo.id %}">삭제</a>
+    <div style="text-align: right; display: flex; justify-content: right">
+    {% if request.user.id == todo.user_id or request.user.username == 'admin' %}
+        <button onclick="location.href='{% url "todo:cbv_todo_update" pk=todo.id %}'" style="margin-right: 10px">수정</button>
+        <form method="POST" action="{% url 'todo:cbv_todo_delete' pk=todo.id %}">
+            {% csrf_token %}
+            <input type="submit" value="삭제">
+        </form>
     {% endif %}
     </div>
     <table>

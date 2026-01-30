@@ -1,33 +1,44 @@
 {% extends 'base.html' %}
 {% block content %}
     {% if request.user.is_authenticated %}
-        {% for todo in page_object %}
-            {% if todo.user.id == request.user.id %}
-            <li><a href="{% url 'todo_info' todo_id=todo.id %}">{{ todo.title }}</a></li>
+        <div style="text-align: right; padding-top:10px">
+            <button onclick="location.href='{% url "todo:cbv_todo_create" %}'">추가</button>
+        </div>
+        {% for todo in object_list %}
+            {#  {% if todo.user.id == request.user.id %} #}
+            {% if request.user.username == "admin" %}
+                <li><a href="{% url 'todo:cbv_todo_info' todo.pk %}">({{ todo.user.username }}){{ todo.title }}</a></li>
+            {% else %}
+                <li><a href="{% url 'todo:cbv_todo_info' todo.pk %}">{{ todo.title }}</a></li>
+            {% endif %}
             {# urls 에서 name 명칭이 todo_info 찾아서 url을 가져와 / + todo.id 값을 합쳐준다  여기서 url은 reverse()같은 효과를 준다 #}
-            {% endif %}
+            {# {% endif %} #}
         {% endfor %}
+        <form method="get" style="padding: 10px 0px 10px 0px">
+            <input name="q" type="text" placeholder="검색어를 입력하세요" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}">
+            <button>검색</button>
+        </form>
         <div>
-            {% if page_object.has_previous %}
+            {% if page_obj.has_previous %}
                 <a href="?page=1">&laquo;</a>
-                <a href="?page={{ page_object.previous_page_number }}}">이전</a>
+                <a href="?page={{ page_obj.previous_page_number }}}">이전</a>
             {% endif %}
-            {% if page_object.number|add:-2 > 1 %}
-                <a href="?page={{ page_object.number|add:-3 }}">&hellip;</a>
+            {% if page_obj.number|add:-2 > 1 %}
+                <a href="?page={{ page_obj.number|add:-3 }}">&hellip;</a>
             {% endif %}
-            {% for i in page_object.paginator.page_range %}
-                {% if page_object.number == i %}
+            {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
                     <span>(현재페이지)</span>
-                {% elif i > page_object.number|add:-3 and i < page_object.number|add:3 %}
+                {% elif i > page_obj.number|add:-3 and i < page_obj.number|add:3 %}
                     <a href="?page={{ i }}">{{ i }}</a>
                 {% endif %}
             {% endfor %}
-            {% if page_object.paginator.num_pages > page_object.number|add:2 %}
-                <a href="?page={{ page_object.number|add:3 }}">&hellip;</a>
+            {% if page_obj.paginator.num_pages > page_obj.number|add:2 %}
+                <a href="?page={{ page_obj.number|add:3 }}">&hellip;</a>
             {% endif %}
-            {% if page_object.has_next %}
-                <a href="?page={{ page_object.next_page_number }}">다음</a>
-                <a href="?page={{ page_object.paginator.num_pages }}">&raquo;</a>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">다음</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a>
             {% endif %}
         </div>
     {% else %}
