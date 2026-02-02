@@ -1,5 +1,5 @@
 from django import forms
-from todo.models import Todo
+from todo.models import Todo, Comment
 
 
 class TodoForm(forms.ModelForm):
@@ -25,6 +25,26 @@ class TodoForm(forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'type': 'date',
+                }
+            )
+        }
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = (
+            'message',
+        )
+        labels = {
+            'message': '내용'
+        }
+        widgets = {
+            'message': forms.Textarea(
+                attrs={
+                    'rows': 3,
+                    'cols': 30,
+                    'class': 'form-control',
+                    'placeholder': '내용을 입력하세요'
                 }
             )
         }
