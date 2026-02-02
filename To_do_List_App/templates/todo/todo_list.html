@@ -43,7 +43,7 @@
     <div  class="container" style="margin-top:15px">
     {% if request.user.is_authenticated %}
         <div style="text-align: right;">
-            <button onclick="location.href='{% url "todo:cbv_todo_create" %}'">추가</button>
+            <button class="btn btn-primary" onclick="location.href='{% url "todo:cbv_todo_create" %}'">추가</button>
         </div>
         {% for todo in object_list %}
             {#  {% if todo.user.id == request.user.id %} #}
@@ -55,33 +55,11 @@
             {# urls 에서 name 명칭이 todo_info 찾아서 url을 가져와 / + todo.id 값을 합쳐준다  여기서 url은 reverse()같은 효과를 준다 #}
             {# {% endif %} #}
         {% endfor %}
-        <form method="get" style="padding: 10px 0px 10px 0px">
-            <input name="q" type="text" placeholder="검색어를 입력하세요" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}">
-            <button>검색</button>
+        <form method="get" class="text-center input-group" style="padding: 10px 0 10px 0">
+            <input class="form-control" name="q" type="text" placeholder="검색어를 입력하세요" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}">
+            <button class="btn btn-primary">검색</button>
         </form>
-        <div>
-            {% if page_obj.has_previous %}
-                <a href="?page=1">&laquo;</a>
-                <a href="?page={{ page_obj.previous_page_number }}}">이전</a>
-            {% endif %}
-            {% if page_obj.number|add:-2 > 1 %}
-                <a href="?page={{ page_obj.number|add:-3 }}">&hellip;</a>
-            {% endif %}
-            {% for i in page_obj.paginator.page_range %}
-                {% if page_obj.number == i %}
-                    <span>(현재페이지)</span>
-                {% elif i > page_obj.number|add:-3 and i < page_obj.number|add:3 %}
-                    <a href="?page={{ i }}">{{ i }}</a>
-                {% endif %}
-            {% endfor %}
-            {% if page_obj.paginator.num_pages > page_obj.number|add:2 %}
-                <a href="?page={{ page_obj.number|add:3 }}">&hellip;</a>
-            {% endif %}
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">다음</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a>
-            {% endif %}
-        </div>
+        {% include 'todo/pagination.html' %}
     {% else %}
         <p>로그인 인원만 리스트를 보는게 가능합니다.</p>
     {% endif %}

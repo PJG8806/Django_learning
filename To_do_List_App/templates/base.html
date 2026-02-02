@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,19 +6,20 @@
     <title>Title</title>
 </head>
     {% block extra_css %}{% endblock %}
+    <link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
 <body>
     <nav style="display: flex;justify-content: space-between">
-        <button onclick="location.href='{% url "todo:cbv_todo_list" %}'">홈</button>
+        <button onclick="location.href='{% url "todo:cbv_todo_list" %}'" class="btn btn-primary">홈</button>
         <div style="text-align: right; font-size:20px; display:flex; justify-content: space-between">
             {% if request.user.is_authenticated %}
                 <form action="{% url 'logout' %}" method="POST" style="text-align: right">
                     {% csrf_token %}
                     {{ request.user.username }}
-                    <button>로그아웃</button>
+                    <button class="btn btn-warning">로그아웃</button>
                 </form>
             {% else %}
                 <div style="text-align: right; display: flex; justify-content: right; font-size: 20px">
-                    <button onclick="location.href='{% url "signup" %}'" style="margin-right: 10px">회원가입</button>
+                    <button class="btn btn-primary" onclick="location.href='{% url "signup" %}'" style="margin-right: 10px">회원가입</button>
                     <button onclick="location.href='{% url "login" %}'">로그인</button>
                 </div>
             {% endif %}

@@ -124,7 +124,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = 'static/'
+STATIC_DIR = BASE_DIR / 'static' # 정의
+
+STATICFILES_DIRS = [
+    STATIC_DIR
+]
+
+STATIC_ROOT = BASE_DIR / 'static_root' # 나중에 배포시 한곳에 모으기 위해
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/cbv/todo/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
