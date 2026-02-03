@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 
-from .form import TodoForm, CommentForm
+from .form import TodoForm, CommentForm, TodoUpdateForm
 from .models import Todo, Comment
 
 
@@ -58,13 +58,13 @@ class TodoDetailView(LoginRequiredMixin, DetailView):
         context = {
             "todo": self.object.__dict__,
             "comment_form": CommentForm(),
-            "page_obj": paginator.get_page(self.request.GET.get('page'))
+            "page_obj": paginator.get_page(self.request.GET.get('page')),
         }
         return context
 
 class TodoCreateView(LoginRequiredMixin, CreateView):
     model = Todo
-    template_name = 'todo/todo_create.html'
+    template_name = 'todo/todo_form.html'
     form_class = TodoForm
 
     def form_valid(self, form):
@@ -78,8 +78,8 @@ class TodoCreateView(LoginRequiredMixin, CreateView):
 
 class TodoUpdateView(LoginRequiredMixin, UpdateView):
     model = Todo
-    template_name = 'todo/todo_update.html'
-    form_class = TodoForm
+    template_name = 'todo/todo_form.html'
+    form_class = TodoUpdateForm
 
     def get_object(self, queryset = None):
         obj = super().get_object(queryset)

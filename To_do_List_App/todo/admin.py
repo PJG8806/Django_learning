@@ -1,4 +1,8 @@
+from ipaddress import summarize_address_range
+
 from django.contrib import admin
+from django_summernote.admin import SummernoteModelAdmin
+
 from .models import Todo, Comment
 
 
@@ -8,9 +12,10 @@ class CommentInline(admin.StackedInline):
     fields = ('message', 'user')
 
 @admin.register(Todo)
-class TodoAdmin(admin.ModelAdmin):
+class TodoAdmin(SummernoteModelAdmin):
     # 목록 화면에 보여줄 컬럼
     list_display = ("title", "description", "is_completed", "start_date", "end_date")
+    summernote_fields = ("description",)
     # 오른쪽 사이트 필터
     list_filter = ("is_completed",)
     # 상단 검색창 검색 기준
@@ -19,9 +24,10 @@ class TodoAdmin(admin.ModelAdmin):
     ordering = ("-start_date",)
     # 상세 페이지 레이아웃
     fieldsets = (
-        ("Todo Info", {"fields": ("title", "description", "is_completed")}),
+        ("Todo Info", {"fields": ("title", "description", "completed_image", "is_completed")}),
         ("Date Info", {"fields": ("start_date", "end_date")}),
     )
+    inlines = (CommentInline,)
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
