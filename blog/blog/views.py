@@ -69,11 +69,15 @@ def blog_create(request):
 
 @login_required()
 def blog_update(request, pk):
-    blog = get_object_or_404(Blog, pk=pk, author=request.user)
+    if request.user.is_superuser:
+        blog = get_object_or_404(Blog, pk=pk)
+    else:
+        blog = get_object_or_404(Blog, pk=pk, author=request.user)
     # if request.user != blog.author:
     #     raise HTTp404
 
-    form = BlogForm(request.POST or None, instance=blog) # instance 넣으면 값에 맞게 form에 넣어준다 (기초 데이터, 수정 전 값)
+    form = BlogForm(request.POST or None, request.FILES or None, instance=blog) # instance 넣으면 값에 맞게 form에 넣어준다 (기초 데이터, 수정 전 값)
+    # 파일을 추가 할려면 request.FILES or None를 추가 해야한다
     if form.is_valid():
         blog = form.save() # DB에 저장은 안하고 모델만 만든다
         return redirect(reverse('fb:detail', kwargs={'pk' : blog.pk}))

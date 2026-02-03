@@ -43,7 +43,8 @@ OWNER_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'django_extensions'
+    'django_extensions',
+    'django_summernote',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + OWNER_APPS + THIRD_PARTY_APPS
@@ -128,6 +129,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_DIR = BASE_DIR / 'static' # 정의
 
+#media
+MEDIA_URL = 'media/' # 유저가 올리는 이미지나 영상 저장하는 공간
+MEDIA_ROOT = BASE_DIR / 'media'
+
 STATICFILES_DIRS = [
     STATIC_DIR
 ]
@@ -139,3 +144,69 @@ STATIC_ROOT = BASE_DIR / 'static_root' # 나중에 배포시 한곳에 모으기
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = '/'
+
+# summernote / git 에서 django 의 summernote 옵션 설정 코드를 복사해서 넣는다
+# 오류나는 부분 또는 중복인 부분은 확인후 지우고 css 부분 밑으로는 다 지우거나 주석한다
+# attachment_storage_class, attachment_model, attachment_model 부분도 지운다
+# 이 옵션을 사용하면 화면에 안 맞던 summernote 부분이 수정 된다
+# 자세한 설정은 https://summernote.org/deep-dive/#custom-toolbar-popover 또는 깃에서 OPTIONS 밑에
+# About toolbar customization, please refer Summernote toolbar section 링크로 접속
+SUMMERNOTE_CONFIG = {
+    # Or, you can set it to `False` to use SummernoteInplaceWidget by default - no iframe mode
+    # In this case, you have to load Bootstrap/jQuery sources and dependencies manually.
+    # Use this when you're already using Bootstrap/jQuery based themes.
+    'iframe': True,
+
+    # You can put custom Summernote settings
+    'summernote': {
+        # As an example, using Summernote Air-mode
+        'airMode': False,
+
+        # Change editor size
+        'width': '100%',
+        'height': '480',
+
+        # Toolbar customization
+        # https://summernote.org/deep-dive/#custom-toolbar-popover
+        'toolbar': [ # summernote 의 툴바를 설정하는 부분이며 수정하면 화면에 툴바가 수정 된다
+            # 영상 추가 빼기 insert에 video 제거
+            # 코드보기 빼기 view에 codeview 제거
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['fontname', ['fontname']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture']],
+            ['view', ['fullscreen', 'help']],
+        ],
+
+        # Or, explicitly set language/locale for editor
+        'lang': 'ko-KR', # 언어 변경
+
+
+        # You can also add custom settings for external plugins
+        # 'print': {
+        #     'stylesheetUrl': '/some_static_folder/printable.css',
+        # },
+        'codemirror': {
+            'mode': 'htmlmixed',
+            'lineNumbers': 'true',
+            # You have to include theme file in 'css' or 'css_for_inplace' before using it.
+            'theme': 'monokai',
+        },
+    },
+
+    # Require users to be authenticated for uploading attachments.
+    'attachment_require_authentication': True,
+
+    # You can completely disable the attachment feature.
+    'disable_attachment': False,
+
+    # Set to `False` to return attachment paths in relative URIs.
+    'attachment_absolute_uri': True,
+
+    # test_func in summernote upload view. (Allow upload images only when user passes the test)
+    # https://docs.djangoproject.com/en/2.2/topics/auth/default/#django.contrib.auth.mixins.UserPassesTestMixin
+
+}
