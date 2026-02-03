@@ -47,11 +47,22 @@
         </div>
         {% for todo in object_list %}
             {#  {% if todo.user.id == request.user.id %} #}
-            {% if request.user.username == "admin" %}
-                <li><a href="{% url 'todo:cbv_todo_info' todo.pk %}">({{ todo.user.username }}){{ todo.title }}</a></li>
+            <div class="position-relative bg-secondary rounded-3 m-1 p-2" style="height: 70px">
+            <a href="{% url 'todo:cbv_todo_info' todo.pk %}" class="row link-light link-offset-2 link-underline-opacity-0 text-black">
+            {% if todo.get_thumbnail_image_url %}
+                <img src="{{ todo.get_thumbnail_image_url }}" alt="" class="col-1">
             {% else %}
-                <li><a href="{% url 'todo:cbv_todo_info' todo.pk %}">{{ todo.title }}</a></li>
+                <img src="" alt="" class="col-1">
             {% endif %}
+                {{ todo.title }}
+            </a>
+            {% if todo.is_completed %}
+                <span class="position-absolute top-0 end-0 text-white p-2">
+                    Completed
+                </span>
+            {% endif %}
+
+            </div>
             {# urls 에서 name 명칭이 todo_info 찾아서 url을 가져와 / + todo.id 값을 합쳐준다  여기서 url은 reverse()같은 효과를 준다 #}
             {# {% endif %} #}
         {% endfor %}
