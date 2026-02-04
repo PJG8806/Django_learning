@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import json
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -19,8 +19,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
+with open(BASE_DIR / '.secret_config'/ 'secret.json') as f:
+    config_secret_str = f.read().strip()
+
+SECRET = json.loads(config_secret_str)
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-zm-r#k4i^yihh1&334_4ef4wx2@3*j4uar)3itk^yph024&#&n"
+SECRET_KEY = json.loads(config_secret_str)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -140,6 +144,17 @@ STATIC_ROOT = BASE_DIR / 'static_root' # 나중에 배포시 한곳에 모으기
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/cbv/todo/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
+
+# auth
+AUTH_USER_MODEL = "users.User"
+
+# Email
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp.naver.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER= SECRET['email']['user']
+EMAIL_HOST_PASSWORD = SECRET['email']['password']
 
 # 미디어 경로
 MEDIA_URL = '/media/'
