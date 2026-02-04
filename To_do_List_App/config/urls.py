@@ -30,6 +30,7 @@ urlpatterns = [
     path("accounts/signup/", user_views.sign_up, name="signup"),
     path("accounts/", include("django.contrib.auth.urls")),
     path('summernote/', include('django_summernote.urls')),
+    path('users/', include('users.urls')),
 ]
 
 if settings.DEBUG:
