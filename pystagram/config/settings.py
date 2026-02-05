@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # own
     'member',
+    'post',
     # 3rd party
     'django_extensions',
 ]
@@ -132,6 +133,10 @@ STATICFILES_DIRS = [
 ] # 배포전 사용 경로
 
 STATIC_ROOT = BASE_DIR / 'staticfiles' # 실제 배포시 사용 경로
+
+# Media
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Auth
 AUTH_USER_MODEL = 'member.User' # 커스텀으로 만든 유저

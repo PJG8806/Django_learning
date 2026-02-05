@@ -38,7 +38,7 @@ def verify_email(request):
         decoded_user_email = signing.loads(cod)
         email = signer.unsign(decoded_user_email, max_age=60 * 30)
     except(TypeError, SignatureExpired):
-        return render(request, 'user/not_verifiex.html')
+        return render(request, 'registration/verify_failed.html')
 
     user = get_object_or_404(User, email=email, is_active=True)
     user.is_active = True
