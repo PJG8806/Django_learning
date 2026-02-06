@@ -1,5 +1,10 @@
+import re
+
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 from utils.models import TimestampModel
 
 User = get_user_model()
@@ -47,9 +52,37 @@ class Tag(TimestampModel):
 
 # 댓글
 class Comment(TimestampModel):
-    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE) # related_name 설정으로 Jinja 에서 post.comment_set를 post.comments로
     content = models.CharField('내용', max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.post} | {self.user}'
+        return f'[comment]{self.post} | {self.user}'
+
+class Like(TimestampModel):
+    post = models.ForeignKey(Post, related_name='likes', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='likes', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'[like]{self.post} | {self.user}'
+
+@receiver(post_save, sender=Post) # post_save 세이브 한후, pre_save 세이브하기 전
+def post_post_save(sender, instance, created, **kwargs):
+    hashtags = re.findall(r'#(\w{1,100})(?=\s|$)', instance.content)
+    # 본문에 들어가야 하는 내용이 이렇다 설정(#으로 시작하고 텍스트가 1~100 까지 뒤에 공백이 끝)
+
+    instance.tags.clear() # 연결된 태그 모델을 삭제한다
+
+    if hashtags:
+        tags = [
+            Tag.objects.get_or_create(tag=hashtag) # 태그가 있으나 없으나 만들어 준다
+            for hashtag in hashtags
+        ]
+
+        tags = [tag for tag, _ in tags] # 태그만 객체만 추출 (안쓰는 변수는 _ 처리)
+
+        instance.tags.add(*tags)
+        # tags = [ # 이런 방식으로 들어간다
+        #     [Tag, False],
+        #     [Tag, True],
+        # ]

@@ -1,13 +1,16 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model, login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import signing
 from django.core.signing import TimestampSigner, SignatureExpired
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.urls import reverse_lazy, reverse
+from django.views import View
+from django.views.generic import FormView, DetailView
 
 from member.forms import SignupForm, LoginForm
+from member.models import UserFollowing
 from utils.email import send_email
 
 User = get_user_model()
@@ -65,7 +68,7 @@ def verify_email(request): # SignupView form_valid url의 code 값을 가져온�
 class LoginView(FormView):
     template_name = 'auth/login.html'
     form_class = LoginForm
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('main')
 
     def form_valid(self, form):
         # email = form.cleaned_data['email']
@@ -78,3 +81,46 @@ class LoginView(FormView):
         if next_page:
             return HttpResponseRedirect(next_page)
         return HttpResponseRedirect(self.get_success_url())
+
+class UserProfileView(DetailView):
+    model = User
+    template_name = 'profile/detail.html'
+    slug_field = 'nickname' # nickname 컬럼 슬러그 필드에서 찾아서 매칭한다, slug로 받은 값으로 컬럼 nickname에서 조회한다
+    slug_url_kwarg = 'slug' # slug 키로 받아서 (url에 slug 입력 또는 urls.py 에서 <str:slug> 방식으로 값을 받는 설정)
+    queryset = User.objects.all()\
+        .prefetch_related('post_set', 'post_set__images', 'following', 'followers')
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            data['is_follow'] = UserFollowing.objects.filter(
+                to_user=self.object,
+                from_user=self.request.user
+            )
+
+        return data
+
+
+class UserFollowingView(LoginRequiredMixin,View):
+    def post(self, *args, **kwargs):
+        pk = kwargs.get('pk',0) # kwargs는 딕셔너리
+        to_user = get_object_or_404(User, pk=pk)
+
+        if to_user == self.request.user: # 나 자신이 팔로우 하면
+            raise Http404()
+
+        following, created = UserFollowing.objects.get_or_create( # 있으면 가져오고 없으면 만든다
+            to_user= to_user,
+            from_user= self.request.user,
+        ) # models에서 두 필드가 중복 막는 설정 추가로 if문 없이 값을 가져오면 밑에 삭제 처리를 한다
+
+        if not created:
+            following.delete()
+
+        return HttpResponseRedirect(
+            reverse('profile:detail', kwargs={'slug':to_user.nickname})
+        )
+
+
+        # 이미 팔로우가 되어 있으면 팔로우 취소 ==> UserFollowing row 삭제
+        # 안되어 있으면 팔로우 시작 => UserFollowing row 생성

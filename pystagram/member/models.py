@@ -1,6 +1,9 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 
+from utils.models import TimestampModel
+
+
 # 커스텀 user 만들기
 
 class UserManger(BaseUserManager):
@@ -31,6 +34,19 @@ class User(AbstractBaseUser): # password, last_login 지원, user은 여러가�
     is_active = models.BooleanField(default = False) # 활성화가 되어 있으면 로그인이 안된다
     is_admin = models.BooleanField(default = False)
     nickname = models.CharField('nickname', max_length=20, unique=True)
+    # 나를 팔로우 하는 사람이 팔로워
+    # 내가 팔로우 하는 사람이 팔로잉
+    # User N:N User
+
+    # 서로 친구가 되면 a <==> b symmetrical = True
+    # 한쪽만 친구가 되면 a => b symmetrical = False
+    following = models.ManyToManyField(
+        'self', symmetrical=False, related_name='followers',
+        through='UserFollowing', through_fields=('from_user', 'to_user') # 두 테이블 참조할때 사용 하며 (내가 첫번째, 참조 하는거)
+        # 가져올 클래스가 밑에 있으면 못가져 오지만 그럴 경우 텍스트로 만들면 해결된다
+    )
+    # 유저가 유저를 가지고 있어야 해서 본인이 본인 상속은 안되어서 User을 사용 못하고 'self'를 사용
+
 
     objects = UserManger()
     # 매니저는 User.objects.all()에서 objects가 매니저
@@ -65,3 +81,13 @@ class User(AbstractBaseUser): # password, last_login 지원, user은 여러가�
     def is_superuser(self):
         return self.is_admin
     # user.is_superuser() -> user.is_superuser 이렇게 사용 가능하게
+
+class UserFollowing(TimestampModel): # 중계 테이블
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_followers') # 팔로워 할 상대 정보
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_following') # 현재 로그인된 유저
+
+    class Meta: # 두가지 필드를 하나로 묶어서 중복 막기
+        unique_together = ('to_user', 'from_user')
+        # to_user 1, from_user 2
+        # to_user 1, from_user 3
+        # to_user 1, from_user 2 => 오류

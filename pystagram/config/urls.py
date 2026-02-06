@@ -29,6 +29,9 @@ urlpatterns = [
     path('create/', post_views.PostCreateView.as_view(), name='create'),
     path('<int:pk>/update/', post_views.PostUpdateView.as_view(), name='update'),
 
+    # like
+    path('like/', post_views.toggle_like, name='toggle_like'),
+
     # auth
     path('signup/', member_views.SignupView.as_view(), name='signup'),
     path('verify/', member_views.verify_email, name='verify'),
@@ -36,6 +39,10 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     #path('accounts', include('django.contrib.auth.urls')), # 안에서 로그아웃 기능만 별도로 사용 위에 코드
     #path('signup/done/', TemplateView.as_view(template_name='auth/signup_done.html'), name='signup_done'),
+
+    # include
+    path('comment/', include('post.comment_urls')),
+    path('profile/', include('member.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,11 +1,13 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponseRedirect, JsonResponse, Http404
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView
 
-from post.forms import PostForm, PostImageFormSet
-from post.models import Post
+from post.forms import PostForm, PostImageFormSet, CommentForm
+from post.models import Post, Like
 
 
 class PostListView(ListView):
@@ -16,10 +18,15 @@ class PostListView(ListView):
     # Post의 PK에 해당하는 images는 prefetch로 미리 로드하여
     # 반복 접근 시 추가 DB 쿼리(N+1 문제)를 방지한다.
 
-    queryset = Post.objects.all().select_related('user').prefetch_related('images')
+    queryset = Post.objects.all().select_related('user').prefetch_related('images','comments', 'likes')
     template_name = 'post/list.html'
     paginate_by = 5
     ordering = ('-created_at',)
+
+    def get_context_data(self, *args, **kwargs): # html 쪽으로 던져주는 부분
+        data = super().get_context_data(*args, **kwargs) # super() -> 부모 클래스의 .뒤에 내용 실행
+        data['comment_form'] = CommentForm()
+        return data
 
 class PostCreateView(LoginRequiredMixin,CreateView):
     model = Post
@@ -64,3 +71,19 @@ class PostUpdateView(LoginRequiredMixin,UpdateView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(user=self.request.user)
+
+@csrf_exempt # 이 뷰에서만 csrf 무시
+@login_required()
+def toggle_like(request):
+    post_pk = request.POST.get('post_pk')
+    if not post_pk:
+        raise Http404
+
+    post = get_object_or_404(Post, pk=post_pk)
+    user = request.user
+
+    like, created = Like.objects.get_or_create(user=user, post=post)
+    if not created:
+        like.delete()
+
+    return JsonResponse({'created': created}) # 자바스크립트에 값을 넘긴다

@@ -1,6 +1,6 @@
 from django.forms import inlineformset_factory
 
-from post.models import  Post, PostImage
+from post.models import  Post, PostImage, Comment
 from utils.forms import BootstrapModelForm
 
 
@@ -26,8 +26,13 @@ PostImageFormSet = inlineformset_factory(
 # inlineformset_factory 첫번째는 위에 PostImageForm() 부분에 PostImageForm(post=post) 식으로 넣어준다
 # 부모 모델의 인스턴스를 편집할 때 자식 모델의 인스턴스도 함께 관리할 수 있는 폼셋을 자동으로 생성
 
-# formset = [
-#     PostImageForm(),
-#     PostImageForm(),
-#     PostImageForm(),
-# ]
+formset = [
+    PostImageForm(),
+    PostImageForm(),
+    PostImageForm(),
+]
+
+class CommentForm(BootstrapModelForm):
+    class Meta:
+        model = Comment
+        fields = ('content', )

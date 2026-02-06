@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize', # 숫자/날짜 같은 값을 사람이 읽기 좋게 바꿔주는 기능
     # own
     'member',
     'post',
