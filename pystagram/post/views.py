@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse, Http404
@@ -9,6 +10,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 from post.forms import PostForm, PostImageFormSet, CommentForm
 from post.models import Post, Like
 
+User = get_user_model()
 
 class PostListView(ListView):
     # Post가 ForeignKey를 가지고 있으면 select_related가능하다
@@ -87,3 +89,19 @@ def toggle_like(request):
         like.delete()
 
     return JsonResponse({'created': created}) # 자바스크립트에 값을 넘긴다
+
+def search(request):
+    search_type = request.GET.get('type') # user, tag
+    q = request.GET.get('q', '')
+
+    if search_type in ['user', 'tag'] and q:
+        if search_type == 'user':
+            object_list = User.objects.filter(nickname__icontains=q) # like 검색
+        else:
+            object_list = Post.objects.filter(tags__tag=q) # 완벽하게 일치
+        context = {
+            'object_list': object_list
+        }
+        return render(request, f'search/search_{search_type}.html', context)
+
+    return render(request, 'search/search.html')

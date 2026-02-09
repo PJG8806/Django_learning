@@ -1,23 +1,39 @@
 {% extends 'base.html' %}
+{% block style %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+{% endblock %}
 {% block content %}
-  <div>
-    <form method="get">
-      <div class="row">
-        <div class="col-3">
-        <select name="type" id="" class="form-control">
-          <option value="user">User</option>
-          <option value="tag">Tag</option>
-        </select>
+  <h1>tag</h1>
+  {% include 'include/search_form.html' %}
+    <div class="row mt-2">
+      {% for post in object_list %}
+        <div class="col-4 my-2">
+          <div class="swiper">
+            <div class="border-1 swiper-wrapper">
+              {% for post_image in post.images.all %}
+                <div class="swiper-slide">
+                  <img class="img-fluid post-image" src="{{ post_image.image.url }}" alt="">
+                </div>
+              {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+          </div>
         </div>
-        <div class="col-7">
-          <input type="text" name="q" placeholder="검색어" class="form-control">
-        </div>
-        <div class="col-2">
-          <button class="btn btn-primary">
-            검색
-          </button>
-        </div>
-      </div>
-    </form>
-  </div>
+      {% endfor %}
+    </div>
+{% endblock %}
+{% block js %}
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    const swiper = new Swiper('.swiper', {
+      // Optional parameters
+      direction: 'horizontal',
+      loop: false,
+
+      // If we need pagination
+      pagination: {
+        el: '.swiper-pagination',
+      },
+    });
+  </script>
 {% endblock %}

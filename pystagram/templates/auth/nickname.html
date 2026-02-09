@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+  <div>
+    <form method="post">
+      {% csrf_token %}
+      {% include 'include/form.html' %}
+      <button class="btn btn-primary btn-sm">저장</button>
+    </form>
+  </div>
+{% endblock %}

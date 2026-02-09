@@ -10,12 +10,20 @@
   <link href="{% static 'font-awesome/css/brands.css' %}" rel="stylesheet" />
   <link href="{% static 'font-awesome/css/solid.css' %}" rel="stylesheet" />
   <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+/>
   {% block style %}{% endblock %}
 </head>
 <body>
 <nav class="d-flex justify-content-between py-2 px-4 bg-black text-white">
   <div>
     <a href="{% url 'main' %}" class="text-decoration-none text-white">Pystagram</a>
+  </div>
+
+  <div>
+    <a href="{% url 'search' %}">
+      <i class="fa-solid fa-magnifying-glass text-white"></i>
+    </a>
   </div>
 
   <div class="text-end">
