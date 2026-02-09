@@ -40,9 +40,13 @@ urlpatterns = [
     #path('accounts', include('django.contrib.auth.urls')), # 안에서 로그아웃 기능만 별도로 사용 위에 코드
     #path('signup/done/', TemplateView.as_view(template_name='auth/signup_done.html'), name='signup_done'),
 
+    # search
+    path('search/', post_views.search, name='search'),
+
     # include
     path('comment/', include('post.comment_urls')),
     path('profile/', include('member.urls')),
+    path('oauth/', include('member.oauth_urls'))
 ]
 
 if settings.DEBUG:

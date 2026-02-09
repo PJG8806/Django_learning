@@ -69,3 +69,4 @@ def todo_delete(request, todo_id):
     todo.delete()
 
     return redirect(reverse('todo_list'))
+

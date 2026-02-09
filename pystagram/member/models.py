@@ -1,4 +1,8 @@
+import random
+import string
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import UserManager
 from django.db import models
 
 from utils.models import TimestampModel
@@ -48,7 +52,7 @@ class User(AbstractBaseUser): # password, last_login 지원, user은 여러가�
     # 유저가 유저를 가지고 있어야 해서 본인이 본인 상속은 안되어서 User을 사용 못하고 'self'를 사용
 
 
-    objects = UserManger()
+    objects = UserManager()
     # 매니저는 User.objects.all()에서 objects가 매니저
     USERNAME_FIELD = 'email' # 이 설정으로 유저이름이 이메일 형식으로 된다 계정 만들때 이메일로 유저 네임 대신
     EMAIL_FIELD = 'email'

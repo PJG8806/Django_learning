@@ -154,3 +154,10 @@ EMAIL_HOST_PASSWORD = SECRET["email"]["password"]
 
 LOGIN_URL = '/login/'
 LOGOUT_REDIRECT_URL = '/'
+
+# OAuth , poetry add requests 다시 요청을 해야 해서 이 패키지 필요
+NAVER_CLIENT_ID = SECRET["naver"]["client_id"]
+NAVER_SECRET = SECRET["naver"]["secret"]
+
+GITHUB_CLIENT_ID = SECRET["github"]["client_id"]
+GITHUB_SECRET = SECRET["github"]["secret"]
