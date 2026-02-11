@@ -22,7 +22,9 @@ from blog import views
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('api/', include('blog.urls')), # setting APPEND_SLASH = False 넣으면 / 여부 다동 리다이렉트 없어짐
+    path('viewset-api/', include('blog.urls.view_set_urls')), # setting APPEND_SLASH = False 넣으면 / 여부 다동 리다이렉트 없어짐
+    path('api/', include('blog.urls.api_urls')),
+    path('generic-api/', include('blog.urls.generics_urls')),
 
     path('', views.BlogListView.as_view(), name='blog_list'),
     path('create/', views.BlogCreateView.as_view(), name='blog_create'),
