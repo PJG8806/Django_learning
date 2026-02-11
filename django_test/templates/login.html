@@ -2,9 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Title</title>
 </head>
 <body>
-$END$
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button>로그인</button>
+  <a href="{% url 'login:signup' %}">회원가입</a>
+</form>
 </body>
 </html>

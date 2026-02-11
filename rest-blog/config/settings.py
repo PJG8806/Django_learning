@@ -127,4 +127,7 @@ APPEND_SLASH = False # / 여부를 확실히 하게 하는 옵션(/넣으면/ �
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': [ # 포스트맨에서 Basic Auth 로그인, DRF에서 기본 인증 방식으로 Basic 인증을 사용 의미
+        'rest_framework.authentication.BasicAuthentication',
+    ]
 }# 페이지네이션 페이지넘버에 사이즈는 10으로 설정
