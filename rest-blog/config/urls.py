@@ -16,8 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 from blog import views
+from config.schema import schema_view
+from user.views import SignUpAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,4 +31,16 @@ urlpatterns = [
 
     path('', views.BlogListView.as_view(), name='blog_list'),
     path('create/', views.BlogCreateView.as_view(), name='blog_create'),
+
+    path('signup', SignUpAPIView.as_view(), name='signup'),
+
+    # jwt
+    path('token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/verify', TokenVerifyView.as_view(), name='token_verify'),
+
+    # swagger
+    path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

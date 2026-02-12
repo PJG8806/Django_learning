@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-nxd)vpy!+)iqc*em=c4hxexckxz@r#abt0l3+znr+$225p@69!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+# ln -sf local.py settings.py 배포전 settings를 local.py로 바꿔서 바로가기를 만들어 배포한다
 
 # Application definition
 
@@ -39,10 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # own
     'blog',
+    'user',
 
     # 3rd party
     'rest_framework',
     'django_extensions',
+    'rest_framework_simplejwt',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -129,5 +132,13 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'DEFAULT_AUTHENTICATION_CLASSES': [ # 포스트맨에서 Basic Auth 로그인, DRF에서 기본 인증 방식으로 Basic 인증을 사용 의미
         'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication', # 심플 jwt
     ]
 }# 페이지네이션 페이지넘버에 사이즈는 10으로 설정
+
+SIMPLE_JWT = { # jwt 설정
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30), # 엑세스토큰 유지 시간 30분
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1), # 리플레시 토근 유지시간 하루
+    # It will work instead of the default serializer(TokenObtainPairSerializer).
+    "TOKEN_OBTAIN_SERIALIZER": "utils.jwt_serializers.MyTokenObtainPairSerializer", # MyTokenObtainPairSerializer 앞부분 jwt 설정 부분으로 지정한다
+}
