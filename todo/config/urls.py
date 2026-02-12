@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from restaurants.urls import router as rest_router
+from restaurants.urls import router as restaurants_router
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    path('', include(rest_router.urls)),
+    path('users/', include('users.urls')),
+    path('', include(restaurants_router.urls)),
+    path('', include('reviews.urls')),
 ]

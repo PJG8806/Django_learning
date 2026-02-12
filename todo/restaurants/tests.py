@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -50,6 +51,10 @@ class RestaurantViewTestCase(APITestCase): # DRF API 테스트 클래스
             "last_order": "21:00:00",
             "regular_holiday": "MON"
         }
+        # DEFAULT_PERMISSION_CLASS 를 추가해줬기 때문에 유저 로그인을 요구하는 부분이 추가되어야합니다.
+        # 기존 코드에 user를 생성하고 user가 로그인되도록 추가해주세요.
+        self.user = get_user_model().objects.create_user(email='test@example.com', password='password1234') # 유저 정보 가져와 담기
+        self.client.login(email='test@example.com', password='password1234') # 로그인
 
     def test_restaurant_list_view(self):
         # url = reverse를 사용하고 url name은 'restaurant-list' 사용
@@ -60,16 +65,16 @@ class RestaurantViewTestCase(APITestCase): # DRF API 테스트 클래스
         response = self.client.get(url) # GET 요청 실행
 
         self.assertEqual(response.status_code, status.HTTP_200_OK) # HTTP 상태코드가 200인지 확인
-        self.assertEqual(len(response.data), 1) # 반환된 리스트 길이가 1인지 확인
+        self.assertEqual(len(response.data['results']), 1) # 반환된 리스트 길이가 1인지 확인
         # 반환된 데이터 필드값 검증
-        self.assertEqual(response.data[0]['name'], self.restaurant_info['name'])
-        self.assertEqual(response.data[0]['description'], self.restaurant_info['description'])
-        self.assertEqual(response.data[0]['address'], self.restaurant_info['address'])
-        self.assertEqual(response.data[0]['contact'], self.restaurant_info['contact'])
-        self.assertEqual(response.data[0]['open_time'], self.restaurant_info['open_time'])
-        self.assertEqual(response.data[0]['close_time'], self.restaurant_info['close_time'])
-        self.assertEqual(response.data[0]['last_order'], self.restaurant_info['last_order'])
-        self.assertEqual(response.data[0]['regular_holiday'], self.restaurant_info['regular_holiday'])
+        self.assertEqual(response.data['results'][0]['name'], self.restaurant_info['name'])
+        self.assertEqual(response.data['results'][0]['description'], self.restaurant_info['description'])
+        self.assertEqual(response.data['results'][0]['address'], self.restaurant_info['address'])
+        self.assertEqual(response.data['results'][0]['contact'], self.restaurant_info['contact'])
+        self.assertEqual(response.data['results'][0]['open_time'], self.restaurant_info['open_time'])
+        self.assertEqual(response.data['results'][0]['close_time'], self.restaurant_info['close_time'])
+        self.assertEqual(response.data['results'][0]['last_order'], self.restaurant_info['last_order'])
+        self.assertEqual(response.data['results'][0]['regular_holiday'], self.restaurant_info['regular_holiday'])
 
     def test_restaurant_post_view(self):
         # url = reverse를 사용하고 url name은 'restaurant-list' 사용
