@@ -1,4 +1,5 @@
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponseRedirect
@@ -32,6 +33,6 @@ class SignUpView(CreateView):
         form.save()
         return HttpResponseRedirect(reverse_lazy('login:login'))
 
-class BlogView(ListView):
+class BlogView(LoginRequiredMixin ,ListView):
     queryset = Blog.objects.all()
     context_object_name = 'blogs'
