@@ -124,6 +124,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = '.static_root'
 
 APPEND_SLASH = False # / 여부를 확실히 하게 하는 옵션(/넣으면/ 넣어야 하고 없으면 없어도 된다)
 
