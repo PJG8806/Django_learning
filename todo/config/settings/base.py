@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 import json
 import os
@@ -18,7 +18,7 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-with open(BASE_DIR / '.config_secret' / 'secret.json') as f:
+with open(BASE_DIR.parent / '.config_secret' / 'secret.json') as f:
     config_secret_str = f.read()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -29,7 +29,7 @@ SECRET_KEY = SECRET['DJANGO_SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
     'django_cleanup.apps.CleanupConfig',
+    'drf_yasg',
 
     'users',
     'restaurants',
@@ -99,6 +100,19 @@ DATABASES = {
     }
 }
 
+# simple jwt
+SIMPLE_JWT = {
+    # 엑세스 토큰의 유효 기간 설정
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    # 리프레쉬 토큰의 유효 기간 설정
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    # jwt 로그인 시 last_login 업데이트 설정
+    "UPDATE_LAST_LOGIN": True,
+    # jwt 암호화 알고리즘
+    "ALGORITHM": "HS256",
+}
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -130,9 +144,11 @@ USE_I18N = True
 
 USE_TZ = True
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 STATIC_URL = '/static/'
-STATIC_DIR = BASE_DIR / 'static'
-STATIC_ROOT = BASE_DIR / '.static_root'
+STATIC_DIR = BASE_DIR.parent / 'static'
+STATIC_ROOT = BASE_DIR.parent / '.static_root'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
@@ -143,7 +159,7 @@ STATICFILES_DIRS = [
 
 #media
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR.parent / 'media'
 
 #auth
 AUTH_USER_MODEL = 'users.User'
