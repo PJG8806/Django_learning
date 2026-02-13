@@ -143,7 +143,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'member.User' # 커스텀으로 만든 유저
 # 장고의 유저가 아니라 member.User로 유저를 사용한다 설정
 
-# Email
+# Email  서버 배포시 서버 주소로 변경 해야 한다
 # form django.core.mail.backends.smtp import EmailBackend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.naver.com' # SMTP 서버명 넣기
