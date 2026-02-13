@@ -498,3 +498,4 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,python,visualstudiocode,django,intellij+all,pycharm+all,venv
 /.config_secret
+settings.py

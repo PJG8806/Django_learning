@@ -30,4 +30,5 @@ class UserDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = UserDetailSerializer
 
     def get_object(self):
+        # 현재 로그인한 사용자만 자신의 정보를 조회, 수정, 삭제할 수 있도록 설정
         return get_object_or_404(User, id=self.request.user.id)

@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
@@ -65,6 +66,47 @@ class UserAPIViewTestCase(APITestCase):
             'email': 'test@example.com',
             'password': 'testpassword1234'
         }
+
+    def test_jwt_login(self):
+        # JWT 로그인 API 테스트 코드 작성
+        user = User.objects.create_user(**self.test_data)
+        data = {
+            'email': user.email,
+            'password': 'testpassword1234'
+        }
+
+        response = self.client.post(reverse('jwt-login'), data)
+        last_login = user.last_login
+        user.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('access', response.data)
+        self.assertIn('refresh', response.data)
+        self.assertNotEqual(user.last_login, last_login)
+
+    def test_jwt_verify(self):
+        # JWT 검증(verify) API 테스트 코드 작성
+        user = User.objects.create_user(**self.test_data)
+        refresh = RefreshToken.for_user(user)
+        access = str(refresh.access_token)
+
+        response = self.client.post(
+            path=reverse('token-verify'),
+            data={'token': access}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_jwt_refresh(self):
+        # JWT 갱신(refresh) API 테스트 코드 작성
+        user = User.objects.create_user(**self.test_data)
+        refresh = RefreshToken.for_user(user)
+
+        response = self.client.post(
+            path=reverse('token-refresh'),
+            data={'refresh': str(refresh)}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('access', response.data)
 
     def test_user_signup(self):
         # 회원가입 APIView 테스트를 위한 코드 작성
